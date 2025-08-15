@@ -32,6 +32,26 @@
    - Branch: `main` / `(root)` を選択 → Save
 3. 数分後に `https://<ユーザー名>.github.io/keiba-roi/` が公開
 
+## 同期（GitHub Gistを使用）
+サーバ不要で、GitHubのGistを「クラウド保管場所」として同期できます。
+
+1. GitHubでPersonal Access Tokenを発行（権限は`gist`のみ）
+   - GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Noteを付け、Scopeは「gist」のみチェック
+2. アプリ下部の「同期（GitHub Gist）」で以下を設定
+   - Token: 上記トークン
+   - Gist ID: 既存Gistを使う場合はそのID、未作成なら「初期化（Gist作成）」で新規作成
+   - 自動同期: 起動時ダウンロード＋保存時に自動アップロード
+3. ボタン
+   - 初期化（Gist作成）: 現在のローカルデータを新規非公開Gistに作成し、Gist IDを保存
+   - アップロード: ローカルの現在データをGistへ上書き
+   - ダウンロード: Gistから取得してローカルへ上書き
+
+注意
+- トークンは端末の`localStorage`にのみ保存されます。共有端末では使用しないでください。
+- トークンは`gist`権限のみにしてください。
+- データファイル名は`keiba-roi-records.json`です。Gist側でこのファイルを編集/上書きしても問題ありません。
+
 ## スマホへのインストール（PWA）
 - Android/Chrome: メニュー →「ホーム画面に追加」
 - iOS/Safari: 共有ボタン →「ホーム画面に追加」
@@ -61,4 +81,3 @@
 ## 注意事項
 - iOSのプライベートブラウズ、あるいは一部の制限環境では`localStorage`やキャッシュが使えない場合があります。
 - PWAの更新はバックグラウンドで取得され、次回起動時に反映されることがあります。
-

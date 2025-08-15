@@ -132,6 +132,29 @@
           <button id="show-more" class="text">もっと表示</button>
         </div>
       </section>
+
+      <section class="card">
+        <h2>同期（GitHub Gist）</h2>
+        <div class="row" style="align-items:flex-end; gap:12px;">
+          <label style="min-width:240px; flex:1;">Personal Access Token（gist権限）
+            <input type="password" id="sync-token" placeholder="ghp_..." />
+          </label>
+          <label style="min-width:200px; flex:1;">Gist ID
+            <input type="text" id="sync-gist" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="sync-auto" /> 自動同期
+          </label>
+          <div class="grow"></div>
+          <button id="sync-save">設定を保存</button>
+        </div>
+        <div class="row" style="margin-top:8px; gap:12px;">
+          <button id="gist-init" class="primary has-tip" data-tip="新規に非公開Gistを作成し、現在のデータをアップロードします。">初期化（Gist作成）</button>
+          <button id="gist-upload" class="has-tip" data-tip="ローカルの現在データをGistに上書きします。">アップロード</button>
+          <button id="gist-download" class="has-tip" data-tip="Gistから取得してローカルに反映します（上書き）。">ダウンロード</button>
+        </div>
+        <small style="color:var(--muted); display:block; margin-top:8px;">注意: トークンは端末のローカルにのみ保存されます。権限は <code>gist</code> のみにしてください。</small>
+      </section>
     </main>
 
     <footer>

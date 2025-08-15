@@ -1,5 +1,6 @@
 (() => {
   const storageKey = 'keiba_roi_records_v1';
+  const syncKey = 'keiba_roi_sync_settings_v1';
 
   /** @typedef {{id:string,date:string,race:string,stake:number,ret:number,memo?:string}} Record */
 
@@ -30,6 +31,14 @@
   const sumPL = $('#sum-pl');
   const canvas = /** @type {HTMLCanvasElement} */(document.getElementById('roi-chart'));
   const ctx = canvas.getContext('2d');
+  // Sync UI elements
+  const syncToken = /** @type {HTMLInputElement} */(document.getElementById('sync-token'));
+  const syncGist = /** @type {HTMLInputElement} */(document.getElementById('sync-gist'));
+  const syncAuto = /** @type {HTMLInputElement} */(document.getElementById('sync-auto'));
+  const syncSaveBtn = document.getElementById('sync-save');
+  const gistInitBtn = document.getElementById('gist-init');
+  const gistUploadBtn = document.getElementById('gist-upload');
+  const gistDownloadBtn = document.getElementById('gist-download');
 
   // Utilities
   const fmtYen = (n) => new Intl.NumberFormat('ja-JP').format(Math.round(n));
@@ -44,6 +53,101 @@
   /** @param {Record[]} rows */
   function saveRecords(rows) {
     localStorage.setItem(storageKey, JSON.stringify(rows));
+    // Background sync if enabled
+    if (syncState.settings.auto && !syncState.isSyncing) scheduleUpload();
+  }
+
+  // ---- Sync (GitHub Gist) ----
+  const syncState = {
+    settings: loadSyncSettings(),
+    uploadTimer: null,
+    isSyncing: false,
+  };
+
+  function loadSyncSettings() {
+    try { return JSON.parse(localStorage.getItem(syncKey) || '{}'); } catch { return {}; }
+  }
+  function saveSyncSettings(s) {
+    localStorage.setItem(syncKey, JSON.stringify(s));
+  }
+  function setSyncUIFromSettings() {
+    if (syncToken) syncToken.value = syncState.settings.token || '';
+    if (syncGist) syncGist.value = syncState.settings.gistId || '';
+    if (syncAuto) syncAuto.checked = !!syncState.settings.auto;
+  }
+  function headers(token) {
+    return {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github+json'
+    };
+  }
+  async function gistInit() {
+    const token = (syncToken?.value || '').trim();
+    if (!token) { alert('トークンを入力してください'); return; }
+    const files = { 'keiba-roi-records.json': { content: JSON.stringify(loadRecords(), null, 2) } };
+    const body = { description: 'keiba-roi data', public: false, files };
+    try {
+      syncState.isSyncing = true;
+      const res = await fetch('https://api.github.com/gists', {
+        method: 'POST', headers: headers(token), body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error('Gist作成に失敗しました');
+      const json = await res.json();
+      const id = json.id;
+      syncState.settings = { token, gistId: id, auto: !!(syncAuto && syncAuto.checked) };
+      saveSyncSettings(syncState.settings);
+      setSyncUIFromSettings();
+      alert('Gistを作成しました: ' + id);
+    } catch (e) {
+      alert('Gist作成に失敗しました。トークン権限（gist）やネットワークを確認してください。');
+    } finally { syncState.isSyncing = false; }
+  }
+  async function gistUpload() {
+    const token = (syncToken?.value || '').trim();
+    const id = (syncGist?.value || '').trim();
+    if (!token || !id) { alert('トークンとGist IDを設定してください'); return; }
+    const files = { 'keiba-roi-records.json': { content: JSON.stringify(loadRecords(), null, 2) } };
+    try {
+      syncState.isSyncing = true;
+      const res = await fetch('https://api.github.com/gists/' + encodeURIComponent(id), {
+        method: 'PATCH', headers: headers(token), body: JSON.stringify({ files })
+      });
+      if (!res.ok) throw new Error('アップロード失敗');
+      alert('アップロード完了');
+    } catch (e) {
+      alert('アップロードに失敗しました');
+    } finally { syncState.isSyncing = false; }
+  }
+  async function gistDownload() {
+    const token = (syncToken?.value || '').trim();
+    const id = (syncGist?.value || '').trim();
+    if (!token || !id) { alert('トークンとGist IDを設定してください'); return; }
+    try {
+      syncState.isSyncing = true;
+      const res = await fetch('https://api.github.com/gists/' + encodeURIComponent(id), { headers: headers(token) });
+      if (!res.ok) throw new Error('ダウンロード失敗');
+      const json = await res.json();
+      const file = json.files && (json.files['keiba-roi-records.json'] || Object.values(json.files)[0]);
+      if (!file) throw new Error('対象ファイルがありません');
+      let text = file.content;
+      if (file.truncated && file.raw_url) {
+        const raw = await fetch(file.raw_url);
+        text = await raw.text();
+      }
+      const rows = JSON.parse(text);
+      if (!Array.isArray(rows)) throw new Error('JSON配列ではありません');
+      const norm = rows.map(r => ({ id: r.id || uid(), date: r.date, race: r.race, stake: Number(r.stake)||0, ret: Number(r.ret)||0, memo: r.memo||'' })).filter(r => r.date && r.race);
+      saveRecords(norm);
+      from.value=''; to.value='';
+      refresh();
+      alert(`ダウンロード完了（${norm.length}件）`);
+    } catch (e) {
+      alert('ダウンロードに失敗しました');
+    } finally { syncState.isSyncing = false; }
+  }
+  function scheduleUpload() {
+    clearTimeout(syncState.uploadTimer);
+    syncState.uploadTimer = setTimeout(() => { gistUpload().catch(()=>{}); }, 800);
   }
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
@@ -458,6 +562,24 @@
     }
   });
 
+  // Sync UI handlers
+  setSyncUIFromSettings();
+  syncSaveBtn?.addEventListener('click', () => {
+    syncState.settings = {
+      token: (syncToken?.value || '').trim(),
+      gistId: (syncGist?.value || '').trim(),
+      auto: !!(syncAuto && syncAuto.checked),
+    };
+    saveSyncSettings(syncState.settings);
+    alert('同期設定を保存しました');
+  });
+  gistInitBtn?.addEventListener('click', () => { gistInit(); });
+  gistUploadBtn?.addEventListener('click', () => { gistUpload(); });
+  gistDownloadBtn?.addEventListener('click', async () => {
+    if (!confirm('Gistの内容でローカルデータを上書きします。よろしいですか？')) return;
+    await gistDownload();
+  });
+
   function isCSVFile(name, type) {
     const n = (name || '').toLowerCase();
     const t = (type || '').toLowerCase();
@@ -572,6 +694,10 @@
   const today = new Date().toISOString().slice(0,10);
   document.getElementById('date').value = today;
   refresh();
+  // Auto download on start if enabled
+  if (syncState.settings && syncState.settings.auto && syncState.settings.token && syncState.settings.gistId) {
+    gistDownload().catch(()=>{});
+  }
   if (showMoreBtn) {
     showMoreBtn.addEventListener('click', () => {
       recordsLimit += 10;
