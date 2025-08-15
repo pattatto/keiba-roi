@@ -90,7 +90,15 @@ button:hover { transform: translateY(-1px); }
 
 table { width: 100%; border-collapse: collapse; }
 /* 小画面で横スクロール可能にするラッパ */
-.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+.table-wrap {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: auto; /* 一覧内部スクロール */
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-height: 420px; /* デスクトップでの高さ上限 */
+  -webkit-overflow-scrolling: touch; /* iOS慣性スクロール */
+}
 /* 表が潰れないように最低幅を設定 */
 table { min-width: 720px; }
 thead th { text-align: left; font-weight: 700; color: var(--muted); padding: 10px 8px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--card); z-index: 1; }
@@ -137,4 +145,6 @@ label.chk input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(
   tbody td { padding: 12px 10px; }
   /* グラフは少し低めに */
   canvas { height: 180px; }
+  /* モバイルでは一覧の高さを画面に合わせる */
+  .table-wrap { max-height: 56vh; }
 }

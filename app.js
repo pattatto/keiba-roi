@@ -16,7 +16,6 @@
   const clearBtn = $('#clear-filter');
   const exportBtn = $('#export-json');
   const importInput = $('#import-json');
-  const showMoreBtn = document.getElementById('show-more');
   const listQ = /** @type {HTMLInputElement} */(document.getElementById('filter-q'));
   const listGroup = /** @type {HTMLSelectElement} */(document.getElementById('filter-group'));
   const listClearBtn = document.getElementById('filter-clear-list');
@@ -173,8 +172,7 @@
   }
 
   // Render table
-  const DEFAULT_LIMIT = 10;
-  let recordsLimit = DEFAULT_LIMIT;
+  // 一覧は内部スクロール化のため全件描画
   let currentRows = [];
   let sortKey = ''; // '', 'stake', 'ret', 'roi'
   let sortDir = 'desc'; // 'asc' | 'desc'
@@ -184,7 +182,7 @@
     tbody.innerHTML = '';
     const filtered = applyListFilter(rows);
     filtered.sort((a, b) => compareRecords(a, b));
-    const visible = filtered.slice(0, recordsLimit);
+    const visible = filtered; // 全件表示し、.table-wrapでスクロール
     for (const r of visible) {
       const tr = document.createElement('tr');
       const roi = r.stake > 0 ? r.ret / r.stake : 0;
@@ -199,9 +197,6 @@
         <td><button data-id="${r.id}" class="del">削除</button></td>
       `;
       tbody.appendChild(tr);
-    }
-    if (showMoreBtn) {
-      showMoreBtn.style.display = filtered.length > recordsLimit ? 'inline-block' : 'none';
     }
   }
 
@@ -679,7 +674,6 @@
     const all = loadRecords();
     const filtered = applyFilter(all);
     currentRows = filtered;
-    recordsLimit = DEFAULT_LIMIT;
     renderTable(currentRows);
     renderSummaryAndChart(currentRows);
   }
@@ -698,12 +692,7 @@
   if (syncState.settings && syncState.settings.auto && syncState.settings.token && syncState.settings.gistId) {
     gistDownload().catch(()=>{});
   }
-  if (showMoreBtn) {
-    showMoreBtn.addEventListener('click', () => {
-      recordsLimit += 10;
-      renderTable(currentRows);
-    });
-  }
+  // 「もっと表示」は廃止（内部スクロールに変更）
   // Sorting handlers on table headers
   document.querySelectorAll('#records thead th.sortable').forEach((th) => {
     th.addEventListener('click', () => {
@@ -719,23 +708,21 @@
         el.classList.remove('sorted-asc','sorted-desc');
       });
       th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
-      recordsLimit = DEFAULT_LIMIT;
       renderTable(currentRows);
     });
   });
   // List filters listeners
-  listQ?.addEventListener('input', () => { recordsLimit = DEFAULT_LIMIT; renderTable(currentRows); });
-  listGroup?.addEventListener('change', () => { recordsLimit = DEFAULT_LIMIT; renderTable(currentRows); });
-  listRoi100?.addEventListener('change', () => { recordsLimit = DEFAULT_LIMIT; renderTable(currentRows); });
-  listFrom?.addEventListener('change', () => { recordsLimit = DEFAULT_LIMIT; renderTable(currentRows); });
-  listTo?.addEventListener('change', () => { recordsLimit = DEFAULT_LIMIT; renderTable(currentRows); });
+  listQ?.addEventListener('input', () => { renderTable(currentRows); });
+  listGroup?.addEventListener('change', () => { renderTable(currentRows); });
+  listRoi100?.addEventListener('change', () => { renderTable(currentRows); });
+  listFrom?.addEventListener('change', () => { renderTable(currentRows); });
+  listTo?.addEventListener('change', () => { renderTable(currentRows); });
   listClearBtn?.addEventListener('click', () => {
     if (listQ) listQ.value = '';
     if (listGroup) listGroup.value = '';
     if (listRoi100) listRoi100.checked = false;
     if (listFrom) listFrom.value = '';
     if (listTo) listTo.value = '';
-    recordsLimit = DEFAULT_LIMIT;
     renderTable(currentRows);
   });
   // Date pickers for filters: open calendar on click or button
