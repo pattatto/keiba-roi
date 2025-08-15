@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>競馬 収支管理（重賞）</title>
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="theme-color" content="#0b0d10" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' ry='12' fill='%232bb673'/%3E%3Ctext x='50%' y='54%' text-anchor='middle' font-size='36' font-family='sans-serif' fill='%23041b0f'%3E%F0%9F%90%B4%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header>
+      <div class="header-row">
+        <h1>競馬 収支管理（重賞）</h1>
+        <div class="grow"></div>
+        <button id="theme-toggle" class="text" title="テーマ切替">テーマ</button>
+      </div>
+    </header>
+
+    <main>
+      
+      <section class="card">
+        <h2>記録の追加</h2>
+        <form id="entry-form">
+          <div class="row">
+            <label>日付
+              <input type="date" id="date" required />
+            </label>
+            <label>レース
+              <select id="race" required></select>
+            </label>
+            <label>投資額(円)
+              <input type="number" id="stake" min="0" step="100" required />
+            </label>
+            <label>回収額(円)
+              <input type="number" id="return" min="0" step="100" required />
+            </label>
+          </div>
+          <div class="row">
+            <label>メモ
+              <input type="text" id="memo" placeholder="任意" />
+            </label>
+            <div class="grow"></div>
+            <button type="submit" class="primary">追加</button>
+          </div>
+          <div class="row">
+            <div class="grow"></div>
+            <button id="export-json" class="has-tip" data-tip="現在の全データをJSONで書き出します。\nバックアップや他端末への移行に使えます。">エクスポート</button>
+            <label class="btn-file has-tip" data-tip="JSON/CSV/TSVからデータを取り込みます。\n読み込み後はフィルタをクリアして全件表示します。">
+              インポート
+              <input type="file" id="import-json" accept="application/json,text/csv,.csv,text/tab-separated-values,.tsv" />
+            </label>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>期間フィルタ & サマリ</h2>
+        <div class="row">
+          <label>開始日
+            <span class="date-field">
+              <input type="date" id="from" />
+              <button type="button" class="picker-btn" data-target="from" aria-label="開始日を選択">📅</button>
+            </span>
+          </label>
+          <label>終了日
+            <span class="date-field">
+              <input type="date" id="to" />
+              <button type="button" class="picker-btn" data-target="to" aria-label="終了日を選択">📅</button>
+            </span>
+          </label>
+          <button id="apply-filter">適用</button>
+          <button id="clear-filter" class="text">クリア</button>
+          <div class="grow"></div>
+        </div>
+
+        <div class="summary">
+          <div><span class="k">件数</span><span id="sum-count">0</span></div>
+          <div><span class="k">総投資</span><span id="sum-stake">0</span></div>
+          <div><span class="k">総回収</span><span id="sum-return">0</span></div>
+          <div><span class="k">回収率</span><span id="sum-roi">0%</span></div>
+          <div><span class="k">収支</span><span id="sum-pl">0</span></div>
+        </div>
+
+        <canvas id="roi-chart" width="900" height="260" aria-label="回収率チャート"></canvas>
+      </section>
+
+      <section class="card">
+        <h2>記録一覧</h2>
+        <div class="row" style="margin-bottom:8px;">
+          <label>キーワード
+            <input type="text" id="filter-q" placeholder="レース/メモ" />
+          </label>
+          <label>種別
+            <select id="filter-group">
+              <option value="">全て</option>
+              <option value="G1">G1</option>
+              <option value="G2">G2</option>
+              <option value="G3">G3</option>
+            </select>
+          </label>
+          <label>開始日
+            <input type="date" id="list-from" />
+          </label>
+          <label>終了日
+            <input type="date" id="list-to" />
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="filter-roi100" /> 回収率100%以上
+          </label>
+          <button id="filter-clear-list" class="text">クリア</button>
+        </div>
+        <div class="table-wrap" tabindex="0" aria-label="記録一覧は横方向にスクロールできます">
+          <table id="records">
+            <thead>
+              <tr>
+                <th class="sortable" data-key="date">日付</th>
+                <th>レース</th>
+                <th class="sortable" data-key="stake">投資</th>
+                <th class="sortable" data-key="ret">回収</th>
+                <th class="sortable" data-key="roi">回収率</th>
+                <th>メモ</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="row" style="justify-content:center; margin-top:8px;">
+          <button id="show-more" class="text">もっと表示</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small>データはブラウザのローカルに保存されます。</small>
+    </footer>
+
+    <script src="races.js"></script>
+    <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+      }
+    </script>
+  </body>
+  </html>
