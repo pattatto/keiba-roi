@@ -57,6 +57,21 @@
 - iOS/Safari: 共有ボタン →「ホーム画面に追加」
 - 初回はオンラインで開き、アセットがキャッシュされるとオフラインでも起動できます。
 
+## スクリーンショット
+以下の画像を `docs/` 配下に配置すると、READMEに表示されます（例のファイル名をそのままご利用ください）。
+
+<p>
+  <img src="docs/screen-home.png" alt="トップ/入力・サマリ画面" width="280" />
+  <img src="docs/screen-list.png" alt="記録一覧（内部スクロール）" width="280" />
+  <img src="docs/screen-sync.png" alt="同期（GitHub Gist）設定" width="280" />
+  <br/>
+  <small>推奨: 幅 1280px 程度で撮影し、必要に応じて 2x スケールを縮小</small>
+  <br/>
+  <small>ライト/ダーク両テーマの提供も歓迎です（例: screen-home-light.png）。</small>
+  <br/>
+  <small>GitHub Pages でもリポジトリ相対パスのままで表示されます。</small>
+</p>
+
 ## CSV取り込みについて
 - 区切り文字は自動判定（カンマ/タブ/セミコロン）
 - ヘッダの同義語を幅広く許容（例）
