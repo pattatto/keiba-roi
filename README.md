@@ -61,9 +61,9 @@
 以下の画像を `docs/` 配下に配置すると、READMEに表示されます（例のファイル名をそのままご利用ください）。
 
 <p>
-  <img src="docs/screen-home.svg" alt="トップ/入力・サマリ画面" width="280" />
-  <img src="docs/screen-list.svg" alt="記録一覧（内部スクロール）" width="280" />
-  <img src="docs/screen-sync.svg" alt="同期（GitHub Gist）設定" width="280" />
+  <img src="docs/screen-home.png" alt="トップ/入力・サマリ画面" width="280" />
+  <img src="docs/screen-list.png" alt="記録一覧（内部スクロール）" width="280" />
+  <img src="docs/screen-sync.png" alt="同期（GitHub Gist）設定" width="280" />
   <br/>
   <small>推奨: 幅 1280px 程度で撮影し、必要に応じて 2x スケールを縮小</small>
   <br/>
