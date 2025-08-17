@@ -31,6 +31,7 @@
             <label>レース
               <input type="text" id="race" list="race-list" placeholder="例: G1 有馬記念（自由入力可）" required />
               <datalist id="race-list"></datalist>
+              <button type="button" id="race-prefix-hint" class="hint-badge has-tip" data-tip="先頭に G1/G2/G3 を付けると\n一覧の『種別』フィルタが使えます。\nタップで先頭に『G1 』を付与します。" aria-label="G1/G2/G3 推奨: タップでG1を付与">G1/G2/G3 推奨</button>
             </label>
             <label>投資額(円)
               <input type="number" id="stake" min="0" step="100" required />

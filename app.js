@@ -9,6 +9,7 @@
   // Elements
   const raceInput = /** @type {HTMLInputElement} */(document.getElementById('race'));
   const raceDatalist = /** @type {HTMLDataListElement} */(document.getElementById('race-list'));
+  const racePrefixHint = /** @type {HTMLButtonElement} */(document.getElementById('race-prefix-hint'));
   const form = $('#entry-form');
   const tbody = $('#records tbody');
   const from = $('#from');
@@ -706,6 +707,29 @@
   const today = new Date().toISOString().slice(0,10);
   document.getElementById('date').value = today;
   refresh();
+  // Race prefix hint visibility & click action
+  function hasGroupPrefix(v) {
+    return /^\s*G[123]\s/i.test(v || '');
+  }
+  function updateRacePrefixHint() {
+    if (!racePrefixHint) return;
+    const v = (raceInput?.value || '').trim();
+    const need = !!v && !hasGroupPrefix(v);
+    if (need) racePrefixHint.classList.add('visible'); else racePrefixHint.classList.remove('visible');
+  }
+  raceInput?.addEventListener('input', updateRacePrefixHint);
+  raceInput?.addEventListener('change', updateRacePrefixHint);
+  racePrefixHint?.addEventListener('click', () => {
+    const v = (raceInput?.value || '').trim();
+    if (!v) return;
+    if (!hasGroupPrefix(v)) {
+      raceInput.value = 'G1 ' + v;
+      updateRacePrefixHint();
+      raceInput.focus();
+    }
+  });
+  // initialize visibility
+  updateRacePrefixHint();
   // Auto download on start if enabled
   if (syncState.settings && syncState.settings.auto && syncState.settings.token && syncState.settings.gistId) {
     gistDownload().catch(()=>{});

@@ -125,6 +125,21 @@ tbody tr:hover { background: rgba(255,255,255,0.03); }
 .roi-down { color: var(--text); background: rgba(239,68,68,0.22); border: 1px solid rgba(239,68,68,0.45); }
 .roi-flat { color: var(--text); background: rgba(245,158,11,0.22); border: 1px solid rgba(245,158,11,0.45); }
 
+/* レース入力のプレフィックス推奨バッジ */
+.hint-badge {
+  display: none;
+  margin-left: 8px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px dashed var(--warn);
+  color: var(--warn);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.hint-badge.visible { display: inline-flex; align-items: center; }
+
 /* グラフはCSSで高さを決めてJSで解像度調整 */
 canvas { width: 100%; height: 220px; margin-top: 12px; border-radius: 8px; background: #0f1318; border: 1px solid var(--border); }
 [data-theme="light"] canvas { background: #f8fafc; }
