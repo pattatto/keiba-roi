@@ -152,17 +152,40 @@
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
 
-  // Populate race datalist (suggestions)
+  // Populate race datalist (recent + predefined suggestions)
   function setupRaceDatalist() {
     if (!raceDatalist) return;
-    const opts = [];
+    // 最近使ったレース（最新日付順 上位15件）
+    const recents = getRecentRaceNames(loadRecords(), 15);
+    // 定義済み重賞一覧
+    const predefined = [];
     RACE_LIST.forEach(({ group, items }) => {
-      items.forEach((name) => {
-        const v = `${group} ${name}`;
-        opts.push(`<option value="${escapeHtml(v)}"></option>`);
-      });
+      items.forEach((name) => { predefined.push(`${group} ${name}`); });
     });
-    raceDatalist.innerHTML = opts.join('');
+    // 重複を排除しつつ、recentを先頭に
+    const all = uniqueStrings([...recents, ...predefined]);
+    raceDatalist.innerHTML = all.map((v) => `<option value="${escapeHtml(v)}"></option>`).join('');
+  }
+
+  function getRecentRaceNames(rows, limit = 15) {
+    const last = new Map(); // race -> lastDate
+    for (const r of rows) {
+      const race = (r.race || '').trim();
+      if (!race) continue;
+      const d = (r.date || '');
+      const cur = last.get(race);
+      if (!cur || d > cur) last.set(race, d);
+    }
+    return [...last.entries()].sort((a, b) => b[1].localeCompare(a[1])).slice(0, limit).map((e) => e[0]);
+  }
+
+  function uniqueStrings(arr) {
+    const out = [];
+    const seen = new Set();
+    for (const v of arr) {
+      if (!seen.has(v)) { seen.add(v); out.push(v); }
+    }
+    return out;
   }
 
   // Render table
@@ -669,6 +692,7 @@
     const filtered = applyFilter(all);
     currentRows = filtered;
     renderTable(currentRows);
+    setupRaceDatalist(); // レコード変化に応じて候補を更新
     renderSummaryAndChart(currentRows);
   }
 
