@@ -1,11 +1,13 @@
 // Simple offline-first Service Worker for keiba-roi
-const CACHE_NAME = 'keiba-roi-cache-v5';
+const CACHE_NAME = 'keiba-roi-cache-v6';
 const PRECACHE_URLS = [
   './',
   './index.html',
-  './styles.css',
-  './app.js',
-  './races.js',
+  './styles/main.css',
+  './js/main.js',
+  './js/utils.js',
+  './js/csv.js',
+  './js/races.js',
   './manifest.json'
 ];
 

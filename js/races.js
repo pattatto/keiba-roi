@@ -23,8 +23,9 @@ const G3 = [
   "チャレンジC", "中日新聞杯(秋)"
 ];
 
-const RACE_LIST = [
+export const RACE_LIST = [
   { group: "G1", items: G1 },
   { group: "G2", items: G2 },
   { group: "G3", items: G3 },
 ];
+

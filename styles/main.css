@@ -108,14 +108,11 @@ thead th.sorted-desc::after { content: " \25BC"; font-size: 12px; color: var(--m
 tbody td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
 tbody tr:hover { background: rgba(255,255,255,0.03); }
 [data-theme="light"] tbody tr:hover { background: rgba(15, 23, 42, 0.04); }
-/* Revert ROI column alignment */
 
 .summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 8px 0 0; }
 .summary > div { padding: 0; border: none; border-radius: 0; background: transparent; }
 .summary .k { display: block; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
 .summary span { font-variant-numeric: tabular-nums; }
-
-/* Remove ROI emphasis */
 
 .badge-danger { color: #fff; background: var(--danger); border-radius: 6px; padding: 2px 6px; font-size: 12px; }
 .badge-ok { color: #072313; background: var(--accent); border-radius: 6px; padding: 2px 6px; font-size: 12px; }
@@ -158,8 +155,7 @@ label.chk input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(
   .picker-btn { width: 44px; height: 44px; }
   thead th { padding: 12px 10px; }
   tbody td { padding: 12px 10px; }
-  /* グラフは少し低めに */
   canvas { height: 180px; }
-  /* モバイルでは一覧の高さを画面に合わせる */
   .table-wrap { max-height: 56vh; }
 }
+
