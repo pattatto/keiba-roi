@@ -7,7 +7,8 @@
   const $ = (sel) => document.querySelector(sel);
 
   // Elements
-  const raceSelect = $('#race');
+  const raceInput = /** @type {HTMLInputElement} */(document.getElementById('race'));
+  const raceDatalist = /** @type {HTMLDataListElement} */(document.getElementById('race-list'));
   const form = $('#entry-form');
   const tbody = $('#records tbody');
   const from = $('#from');
@@ -151,24 +152,17 @@
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
 
-  // Populate races
-  function setupRaceSelect() {
-    raceSelect.innerHTML = '';
-    const optEmpty = document.createElement('option');
-    optEmpty.value = '';
-    optEmpty.textContent = '選択してください';
-    raceSelect.appendChild(optEmpty);
+  // Populate race datalist (suggestions)
+  function setupRaceDatalist() {
+    if (!raceDatalist) return;
+    const opts = [];
     RACE_LIST.forEach(({ group, items }) => {
-      const og = document.createElement('optgroup');
-      og.label = group;
       items.forEach((name) => {
-        const op = document.createElement('option');
-        op.value = `${group} ${name}`;
-        op.textContent = `${group} ${name}`;
-        og.appendChild(op);
+        const v = `${group} ${name}`;
+        opts.push(`<option value="${escapeHtml(v)}"></option>`);
       });
-      raceSelect.appendChild(og);
     });
+    raceDatalist.innerHTML = opts.join('');
   }
 
   // Render table
@@ -473,7 +467,7 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const date = /** @type {HTMLInputElement} */($('#date')).value;
-    const race = /** @type {HTMLSelectElement} */(raceSelect).value;
+    const race = (raceInput?.value || '').trim();
     const stake = parseNum(/** @type {HTMLInputElement} */($('#stake')).value);
     const ret = parseNum(/** @type {HTMLInputElement} */($('#return')).value);
     const memo = /** @type {HTMLInputElement} */($('#memo')).value.trim();
@@ -683,7 +677,7 @@
   }
 
   // Init
-  setupRaceSelect();
+  setupRaceDatalist();
   // Default date = today
   const today = new Date().toISOString().slice(0,10);
   document.getElementById('date').value = today;

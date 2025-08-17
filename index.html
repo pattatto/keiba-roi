@@ -29,7 +29,8 @@
               <input type="date" id="date" required />
             </label>
             <label>レース
-              <select id="race" required></select>
+              <input type="text" id="race" list="race-list" placeholder="例: G1 有馬記念（自由入力可）" required />
+              <datalist id="race-list"></datalist>
             </label>
             <label>投資額(円)
               <input type="number" id="stake" min="0" step="100" required />
