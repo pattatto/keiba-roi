@@ -1,5 +1,5 @@
 // Simple offline-first Service Worker for keiba-roi
-const CACHE_NAME = 'keiba-roi-cache-v6';
+const CACHE_NAME = 'keiba-roi-cache-v7';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -8,7 +8,9 @@ const PRECACHE_URLS = [
   './js/utils.js',
   './js/csv.js',
   './js/races.js',
-  './manifest.json'
+  './manifest.json',
+  './icons/favicon.svg',
+  './icons/icon-maskable.svg'
 ];
 
 self.addEventListener('install', (event) => {
