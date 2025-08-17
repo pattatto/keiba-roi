@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg{fill:#0b0d10}
+      .card{fill:#12161c;stroke:#1f2937;stroke-width:2}
+      .muted{fill:#8aa0b6;font:16px ui-sans-serif, system-ui}
+      .title{fill:#e5ecf4;font:bold 22px ui-sans-serif, system-ui}
+      .text{fill:#e5ecf4;font:16px ui-sans-serif, system-ui}
+      .chip{fill:#2bb673}
+      .chipText{fill:#041b0f;font:bold 14px ui-sans-serif, system-ui}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="720"/>
+  <text class="title" x="32" y="56">競馬 収支管理（重賞）</text>
+
+  <!-- 入力カード -->
+  <rect class="card" x="32" y="88" width="1216" height="140" rx="12"/>
+  <text class="title" x="56" y="120">記録の追加</text>
+  <text class="muted" x="56" y="154">日付　レース（自由入力＋候補）　投資額　回収額　メモ</text>
+  <rect x="1080" y="112" width="120" height="36" rx="8" fill="#2bb673"/>
+  <text class="chipText" x="1116" y="136">追加</text>
+
+  <!-- サマリカード -->
+  <rect class="card" x="32" y="244" width="1216" height="200" rx="12"/>
+  <text class="title" x="56" y="276">期間フィルタ &amp; サマリ</text>
+  <text class="muted" x="56" y="308">件数 24／総投資 ¥120,000／総回収 ¥132,500／回収率 110.4%／収支 ¥12,500</text>
+  <!-- 簡易チャート表現 -->
+  <polyline points="80,400 220,360 360,380 520,340 680,360 840,300 1000,320 1180,280" fill="none" stroke="#2bb673" stroke-width="3"/>
+  <line x1="80" y1="360" x2="1180" y2="360" stroke="#ef4444" stroke-dasharray="6 6"/>
+
+  <!-- フッタ注記 -->
+  <text class="muted" x="32" y="704">データはブラウザのローカルに保存されます。</text>
+</svg>
+

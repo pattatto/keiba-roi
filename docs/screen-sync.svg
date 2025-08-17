@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg{fill:#0b0d10}
+      .card{fill:#12161c;stroke:#1f2937;stroke-width:2}
+      .title{fill:#e5ecf4;font:bold 22px ui-sans-serif, system-ui}
+      .muted{fill:#8aa0b6;font:16px ui-sans-serif, system-ui}
+      .btn{fill:#0f1318;stroke:#1f2937;stroke-width:2}
+      .btnText{fill:#e5ecf4;font:14px ui-sans-serif, system-ui}
+      .primary{fill:#2bb673}
+      .primaryText{fill:#041b0f;font:bold 14px ui-sans-serif, system-ui}
+    </style>
+  </defs>
+  <rect class="bg" width="1280" height="720"/>
+  <rect class="card" x="32" y="40" width="1216" height="300" rx="12"/>
+  <text class="title" x="56" y="72">同期（GitHub Gist）</text>
+  <text class="muted" x="56" y="104">Token, Gist ID, 自動同期の設定。初期化/アップロード/ダウンロードをサポート。</text>
+
+  <!-- 入力欄 -->
+  <rect class="btn" x="56" y="124" width="420" height="40" rx="8"/>
+  <text class="muted" x="66" y="150">Personal Access Token（gist権限）</text>
+  <rect class="btn" x="492" y="124" width="360" height="40" rx="8"/>
+  <text class="muted" x="502" y="150">Gist ID</text>
+  <rect class="btn" x="864" y="124" width="160" height="40" rx="8"/>
+  <text class="muted" x="874" y="150">自動同期</text>
+
+  <!-- 操作ボタン -->
+  <rect class="primary" x="56" y="184" width="200" height="40" rx="8"/>
+  <text class="primaryText" x="84" y="210">初期化（Gist作成）</text>
+  <rect class="btn" x="268" y="184" width="160" height="40" rx="8"/>
+  <text class="btnText" x="312" y="210">アップロード</text>
+  <rect class="btn" x="432" y="184" width="160" height="40" rx="8"/>
+  <text class="btnText" x="472" y="210">ダウンロード</text>
+  <rect class="btn" x="600" y="184" width="160" height="40" rx="8"/>
+  <text class="btnText" x="640" y="210">設定を保存</text>
+
+  <text class="muted" x="56" y="272">注: トークンは端末のローカルにのみ保存されます。権限は gist のみにしてください。</text>
+</svg>
+

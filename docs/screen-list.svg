@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg{fill:#0b0d10}
+      .card{fill:#12161c;stroke:#1f2937;stroke-width:2}
+      .title{fill:#e5ecf4;font:bold 22px ui-sans-serif, system-ui}
+      .muted{fill:#8aa0b6;font:16px ui-sans-serif, system-ui}
+      .thead{fill:#12161c}
+      .row{fill:#0f1318}
+      .ok{fill:#2bb673}
+      .ng{fill:#ef4444}
+      .text{fill:#e5ecf4;font:14px ui-sans-serif, system-ui}
+    </style>
+  </defs>
+  <rect class="bg" width="1280" height="720"/>
+  <rect class="card" x="32" y="40" width="1216" height="640" rx="12"/>
+  <text class="title" x="56" y="72">記録一覧</text>
+  <text class="muted" x="56" y="100">フィルタ: キーワード／種別 G1-G3／期間／回収率100%</text>
+
+  <!-- テーブル -->
+  <rect x="56" y="120" width="1170" height="520" rx="8" fill="#0f1318" stroke="#1f2937"/>
+  <rect class="thead" x="56" y="120" width="1170" height="40"/>
+  <text class="muted" x="72" y="146">日付</text>
+  <text class="muted" x="220" y="146">レース</text>
+  <text class="muted" x="560" y="146">投資</text>
+  <text class="muted" x="720" y="146">回収</text>
+  <text class="muted" x="860" y="146">回収率</text>
+  <text class="muted" x="980" y="146">メモ</text>
+
+  <!-- 行の例 -->
+  <g>
+    <rect class="row" x="56" y="160" width="1170" height="44"/>
+    <text class="text" x="72" y="188">2025-06-23</text>
+    <text class="text" x="220" y="188">G1 有馬記念</text>
+    <text class="text" x="560" y="188">¥10,000</text>
+    <text class="text" x="720" y="188">¥15,300</text>
+    <rect class="ok" x="860" y="170" width="80" height="20" rx="10"/>
+  </g>
+  <g>
+    <rect class="row" x="56" y="206" width="1170" height="44"/>
+    <text class="text" x="72" y="234">2025-06-16</text>
+    <text class="text" x="220" y="234">G3 函館記念</text>
+    <text class="text" x="560" y="234">¥6,000</text>
+    <text class="text" x="720" y="234">¥2,000</text>
+    <rect class="ng" x="860" y="216" width="80" height="20" rx="10"/>
+  </g>
+
+  <text class="muted" x="56" y="676">表はカード内で縦スクロール可能（ヘッダ固定）</text>
+</svg>
+
