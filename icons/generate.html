@@ -1,0 +1,84 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Icon Generator - keiba-roi</title>
+<style>
+  body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans JP; padding: 20px; background: #0b0d10; color: #e5ecf4; }
+  .card { background: #12161c; border: 1px solid #1f2937; border-radius: 12px; padding: 16px; max-width: 720px; }
+  button { height: 36px; border-radius: 8px; border: 1px solid #1f2937; background: #0f1318; color: #e5ecf4; padding: 0 12px; cursor: pointer; }
+  button.primary { background: #22c55e; color: #052e16; border: none; font-weight: 600; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  small { color: #8aa0b6; }
+  img.preview { width: 128px; height: 128px; border-radius: 28px; border: 1px solid #1f2937; background: #0f1318; }
+  .sizes { display: flex; gap: 8px; }
+  .sizes code { background: #0f1318; padding: 2px 6px; border-radius: 6px; border: 1px solid #1f2937; }
+  a { color: #22c55e; }
+  .muted { color: #8aa0b6; }
+</style>
+<div class="card">
+  <h1 style="margin:0 0 8px;">アイコン生成（PNG書き出し）</h1>
+  <p class="muted" style="margin-top:0;">`icons/icon-maskable.svg` を基に、各サイズのPNGを生成してダウンロードします。生成後、`icons/` の既存PNGを置き換えてください。</p>
+  <div class="row" style="margin:8px 0 12px;">
+    <img class="preview" id="preview" alt="preview" />
+    <div>
+      <div>元SVG: <code>icons/icon-maskable.svg</code></div>
+      <div class="sizes">出力サイズ: <code>180</code><code>192</code><code>512</code></div>
+      <small>注: iOSのホームアイコンは180pxを推奨</small>
+    </div>
+  </div>
+  <div class="row">
+    <button data-size="180">180pxを書き出し（icon-180.png）</button>
+    <button data-size="192">192pxを書き出し（icon-192.png）</button>
+    <button data-size="512">512pxを書き出し（icon-512.png）</button>
+    <div style="flex:1"></div>
+    <button id="all" class="primary">3サイズを順に書き出し</button>
+  </div>
+  <p><small>生成したPNGを <code>icons/</code> に上書き配置後、コミット＆プッシュしてください。</small></p>
+</div>
+<canvas id="cv" style="display:none"></canvas>
+<script>
+  const svgPath = './icon-maskable.svg';
+  const preview = document.getElementById('preview');
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const img = new Image();
+  img.onload = () => { preview.src = svgPath; };
+  img.src = svgPath;
+
+  async function exportPng(size, filename) {
+    return new Promise((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => {
+        cv.width = size; cv.height = size; ctx.clearRect(0,0,size,size);
+        ctx.drawImage(i, 0, 0, size, size);
+        cv.toBlob((blob) => {
+          if (!blob) return reject(new Error('toBlob failed'));
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(a.href);
+          resolve();
+        }, 'image/png');
+      };
+      i.onerror = reject;
+      i.src = svgPath + '?t=' + Date.now();
+    });
+  }
+
+  document.querySelectorAll('button[data-size]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const size = Number(btn.getAttribute('data-size'));
+      const name = size === 180 ? 'icon-180.png' : size === 192 ? 'icon-192.png' : 'icon-512.png';
+      await exportPng(size, name);
+    });
+  });
+  document.getElementById('all').addEventListener('click', async () => {
+    for (const s of [180,192,512]) {
+      const name = s === 180 ? 'icon-180.png' : s === 192 ? 'icon-192.png' : 'icon-512.png';
+      // eslint-disable-next-line no-await-in-loop
+      await exportPng(s, name);
+    }
+    alert('3サイズのPNGを書き出しました。icons/ に上書きしてください。');
+  });
+</script>
+
