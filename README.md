@@ -68,15 +68,49 @@
 - サンプル: `template.csv` を参照
 
 ## 開発メモ
-- ビルド不要の静的サイト構成
-- 主なファイル
-  - `index.html`: 画面構造
-  - `styles.css`: スタイル
-  - `app.js`: ロジック（保存/表示/チャート/インポート等）
-  - `races.js`: 重賞レース一覧（G1/G2/G3）
+- ビルド不要の静的サイト構成（ES Modules）
+- 主なファイル/ディレクトリ
+  - `index.html`: 画面構造（`type="module"` で `js/main.js` を読み込み）
+  - `styles/main.css`: 全体スタイル
+  - `js/main.js`: 画面初期化・イベント・描画の統括
+  - `js/utils.js`: 共通関数（`fmtYen`/`pct`/`escapeHtml`/`uid` など）
+  - `js/csv.js`: CSV判定・パース・正規化
+  - `js/races.js`: 重賞レース一覧（`RACE_LIST`）
   - `manifest.json`: PWAマニフェスト（名前/色/アイコン等）
   - `sw.js`: Service Worker（プリキャッシュ＋キャッシュファースト）
-  - `icons/`: PWAアイコン（`192x192`, `512x512`, iOS向け`180x180`）
+  - `icons/`: アイコン関連（`favicon.svg`/`icon-maskable.svg` と PNG）
+
+### ディレクトリ構成（抜粋）
+```
+keiba-roi/
+├─ index.html
+├─ manifest.json
+├─ sw.js
+├─ styles/
+│  └─ main.css
+├─ js/
+│  ├─ main.js
+│  ├─ utils.js
+│  ├─ csv.js
+│  └─ races.js
+├─ icons/
+│  ├─ favicon.svg           # タブ用ファビコン
+│  ├─ icon-maskable.svg     # PWAマスカブル（元デザイン）
+│  ├─ icon-180.png          # iOS向け（ホーム追加）
+│  ├─ icon-192.png          # Android/Manifest用
+│  ├─ icon-512.png          # Android/Manifest用
+│  └─ generate.html         # SVG→PNGを書き出す補助ページ
+├─ template.csv
+└─ README.md
+```
+
+### アイコンの更新（SVG→PNGの書き出し）
+- 基本デザインは `icons/icon-maskable.svg`（角丸＋上向き矢印）
+- PNGを更新するには、ローカルHTTPで以下を開く
+  - 親ディレクトリで `python3 -m http.server 5173`
+  - `http://localhost:5173/keiba-roi/icons/generate.html`
+- 「3サイズを順に書き出し」で `icon-180.png`/`icon-192.png`/`icon-512.png` を生成して `icons/` に上書き保存
+- 反映後は `sw.js` の `CACHE_NAME` をインクリメントして配信更新（PWAキャッシュ刷新）
 
 ## 注意事項
 - iOSのプライベートブラウズ、あるいは一部の制限環境では`localStorage`やキャッシュが使えない場合があります。
